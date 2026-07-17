@@ -1,0 +1,115 @@
+/* --- GLOBAL RESET --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+/* --- ORIGINAL LOGIN/REGISTER STYLES (Kept exactly as before) --- */
+body { 
+    background: #0b0e14; 
+    color: white; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+h2 { color: #00d2ff; margin-bottom: 10px; }
+.input-group { text-align: left; margin-bottom: 15px; }
+input, select { 
+    width: 100%; padding: 10px; background: rgba(0,0,0,0.2); 
+    border: 1px solid #444; color: white; border-radius: 5px; 
+}
+.btn-primary { 
+    width: 100%; padding: 12px; background: #00d2ff; border: none; 
+    font-weight: bold; cursor: pointer; border-radius: 5px; 
+}
+
+/* --- NEW DASHBOARD UNIQUE STYLES (Starts with #dashboard-body) --- */
+#dashboard-body {
+    display: flex;
+    justify-content: flex-start; /* Fixes the centering issue for dashboard */
+    align-items: stretch;
+    overflow: hidden;
+}
+
+#dashboard-body .sidebar {
+    width: 260px;
+    background: #151921;
+    border-right: 1px solid #2d333b;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar Cutout Buttons */
+#dashboard-body .nav-item {
+    padding: 15px;
+    margin-bottom: 12px; /* Gap between buttons */
+    border-radius: 10px; /* Rectangular cutout */
+    color: #8b949e;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#dashboard-body .nav-item.active { 
+    background: #1f6feb; 
+    color: white; 
+}
+
+#dashboard-body .nav-item:hover:not(.active) { 
+    background: rgba(0, 210, 255, 0.1); 
+    color: #00d2ff; 
+}
+
+#dashboard-body .main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Summary Cards */
+#dashboard-body .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+#dashboard-body .stat-card {
+    background: #1c2128;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #30363d;
+    border-top: 4px solid #00d2ff;
+}
+
+/* Status Colors */
+.status-green { color: #3fb950; }
+.status-yellow { color: #d29922; }
+.status-red { color: #f85149; }
+
+#dashboard-body .panel {
+    background: #1c2128;
+    border: 1px solid #30363d;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+/* Login Overlay Style */
+#loginOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg); display: none; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 20000;
+}
+.login-box {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 40px; border-radius: 12px; text-align: center; width: 320px;
+}

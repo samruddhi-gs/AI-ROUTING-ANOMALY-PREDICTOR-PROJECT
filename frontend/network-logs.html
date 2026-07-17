@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Logs | AI Guard Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+
+:root{
+--bg:#0b0e14;
+--sidebar:#11141b;
+--card:#161b22;
+--primary:#00d2ff;
+--border:#30363d;
+--text-dim:#8b949e;
+--danger:#f85149;
+--success:#3fb950;
+--warning:#d29922;
+--accent:rgba(0,210,255,0.1);
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:white;
+font-family:'Segoe UI',sans-serif;
+display:flex;
+height:100vh;
+overflow:hidden;
+}
+
+#sidebar-container{ display:flex; flex-shrink:0; }
+
+.sidebar{
+width:280px;
+height:100vh;
+background:var(--sidebar);
+border-right:1px solid var(--border);
+display:flex;
+flex-direction:column;
+padding:25px 0;
+flex-shrink:0;
+}
+
+.sidebar-header{
+padding:0 25px 30px;
+color:var(--primary);
+font-size:22px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+nav{
+display:flex;
+flex-direction:column;
+gap:10px;
+padding:0 15px;
+flex:1;
+}
+
+.nav-item{
+padding:14px 20px;
+color:var(--text-dim);
+cursor:pointer;
+transition:0.3s;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+text-decoration:none;
+}
+
+.nav-item:hover{ background:var(--accent); color:white; }
+
+.nav-item.active{
+background:var(--primary);
+color:#000 !important;
+font-weight:bold;
+}
+
+.logout{
+margin:15px;
+padding:14px 20px;
+color:var(--danger);
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+transition:0.3s;
+user-select:none;
+}
+
+.logout:hover{ background:rgba(248,81,73,0.15); }
+
+.container{
+flex:1;
+padding:40px;
+overflow:auto;
+background:radial-gradient(circle at top right,#1a1f29,#0b0e14);
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+border-bottom:1px solid var(--border);
+padding-bottom:20px;
+}
+
+.header p{ color:var(--text-dim); margin-top:5px; }
+
+.btn-group{ display:flex; gap:10px; }
+
+.btn-main{
+background:var(--primary);
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+color:black;
+transition:.3s;
+}
+
+.btn-main:hover{ opacity:0.9; }
+
+.btn-main:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.btn-sec{
+background:transparent;
+border:1px solid var(--border);
+color:white;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn-sec:hover{ background:var(--accent); }
+
+.upload-info{
+margin-top:10px;
+font-size:14px;
+color:var(--success);
+display:none;
+}
+
+.remove-btn{ margin-left:10px; color:var(--danger); cursor:pointer; }
+
+/* ── Toast Notification ── */
+#toast{
+position:fixed;
+top:24px;
+right:24px;
+z-index:9999;
+padding:14px 22px;
+border-radius:10px;
+font-size:14px;
+font-weight:600;
+display:none;
+box-shadow:0 4px 20px rgba(0,0,0,0.5);
+max-width:360px;
+line-height:1.5;
+}
+
+#toast.toast-threat{
+background:rgba(248,81,73,0.15);
+border:1px solid var(--danger);
+color:var(--danger);
+}
+
+#toast.toast-anomaly{
+background:rgba(210,153,34,0.15);
+border:1px solid var(--warning);
+color:var(--warning);
+}
+
+#toast.toast-normal{
+background:rgba(63,185,80,0.15);
+border:1px solid var(--success);
+color:var(--success);
+}
+
+#toast.toast-error{
+background:rgba(248,81,73,0.1);
+border:1px solid var(--danger);
+color:var(--danger);
+}
+
+.chart-card{
+height:260px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+padding:25px;
+margin-bottom:30px;
+transition:.3s;
+}
+
+.chart-card:hover{ border-color:var(--primary); }
+
+.log-table{
+width:100%;
+border-collapse:collapse;
+background:var(--card);
+border-radius:12px;
+overflow:hidden;
+border:1px solid var(--border);
+}
+
+.log-table th,
+.log-table td{
+padding:14px;
+text-align:left;
+border-bottom:1px solid #21262d;
+font-size:14px;
+}
+
+.log-table th{ background:#1c2128; color:var(--primary); }
+.log-table tr:hover{ background:rgba(255,255,255,0.02); }
+
+.status-badge{
+padding:5px 10px;
+border-radius:6px;
+font-size:12px;
+font-weight:bold;
+}
+
+.status-threat{ background:rgba(248,81,73,0.2); color:var(--danger); }
+.status-anomaly{ background:rgba(210,153,34,0.2); color:var(--warning); }
+.status-normal{ background:rgba(63,185,80,0.2); color:var(--success); }
+
+</style>
+</head>
+<body>
+
+<!-- Auth guard -->
+<script>
+if (localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'login.html';
+}
+</script>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<div id="sidebar-container"></div>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1>Network Logs</h1>
+            <p>AI Network Threat Monitoring</p>
+            <div id="uploadedFile" class="upload-info"></div>
+        </div>
+        <div class="btn-group">
+            <input type="file" id="fileInput" hidden>
+            <button class="btn-sec" onclick="uploadLogs()">Upload Logs</button>
+            <button class="btn-main" id="scanBtn" onclick="startScan()">Scan Now</button>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <canvas id="anomalyLineChart"></canvas>
+    </div>
+
+    <table class="log-table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Source Node</th>
+                <th>Target ASN</th>
+                <th>Risk Score</th>
+                <th>Verdict</th>
+            </tr>
+        </thead>
+        <tbody id="log-body"></tbody>
+    </table>
+
+</div>
+
+<script src="sidebar-loader.js"></script>
+
+<script>
+
+/* ── Toast helper ── */
+function showToast(message, type = "normal") {
+    const toast = document.getElementById("toast");
+    toast.className = "toast-" + type;
+    toast.innerHTML = message;
+    toast.style.display = "block";
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 5000);
+}
+
+/* ── Chart ── */
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('anomalyLineChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['10:00','10:10','10:20','10:30','10:40','10:50'],
+            datasets: [{
+                label: 'Anomalies Detected',
+                data: [2, 5, 3, 12, 4, 8],
+                borderColor: '#f85149',
+                backgroundColor: 'rgba(248,81,73,0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
+
+let uploadedFileName = null;
+
+/* ── Restore saved state on load ── */
+window.onload = function () {
+    const savedFile = localStorage.getItem("uploadedFileName");
+    const savedLogs = localStorage.getItem("scanLogs");
+
+    if (savedFile) {
+        uploadedFileName = savedFile;
+        const box = document.getElementById("uploadedFile");
+        box.style.display = "block";
+        box.innerHTML = `Uploaded File: <b>${uploadedFileName}</b>
+            <span class="remove-btn" onclick="removeFile()">❌ Remove</span>`;
+    }
+
+    if (savedLogs) {
+        document.getElementById("log-body").innerHTML = savedLogs;
+    }
+};
+
+/* ── Upload Logs ── */
+function uploadLogs() {
+    const input = document.getElementById("fileInput");
+    input.click();
+    input.onchange = async function () {
+        const file = input.files[0];
+        if (!file) { showToast("No file selected", "error"); return; }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/api/upload-logs", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Upload failed (HTTP " + res.status + ")");
+            }
+
+            const result = await res.json();
+
+            if (result.status === "success") {
+                uploadedFileName = file.name;
+                localStorage.setItem("uploadedFileName", uploadedFileName);
+
+                const box = document.getElementById("uploadedFile");
+                box.style.display = "block";
+                box.innerHTML = `Uploaded File: <b>${uploadedFileName}</b>
+                    <span class="remove-btn" onclick="removeFile()">❌ Remove</span>`;
+
+                showToast("✅ Logs uploaded successfully", "normal");
+            } else {
+                throw new Error(result.message || "Upload failed");
+            }
+        } catch (err) {
+            showToast("❌ Upload Error: " + err.message, "error");
+        }
+    };
+}
+
+/* ── Remove File ── */
+function removeFile() {
+    uploadedFileName = null;
+    const box = document.getElementById("uploadedFile");
+    box.style.display = "none";
+    box.innerHTML = "";
+    document.getElementById("fileInput").value = "";
+    localStorage.removeItem("uploadedFileName");
+    localStorage.removeItem("scanLogs");
+    document.getElementById("log-body").innerHTML = "";
+    showToast("File removed", "normal");
+}
+
+/* ── Scan ── */
+async function startScan() {
+    if (!uploadedFileName) {
+        showToast("⚠ Please upload a log file first", "error");
+        return;
+    }
+
+    const scanBtn = document.getElementById("scanBtn");
+    scanBtn.disabled = true;
+    scanBtn.textContent = "Scanning...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: localStorage.getItem("currentUser") || "",
+                emailAlert: localStorage.getItem("emailAlertEnabled") === "true"
+            })
+        });
+
+        // Always parse body first, then check status
+        const result = await response.json();
+
+        if (!response.ok || result.status !== "success") {
+            throw new Error(result.message || "Scan failed (HTTP " + response.status + ")");
+        }
+
+        const data = result.data;
+        const table = document.getElementById("log-body");
+
+        let statusClass = "status-normal";
+        let toastType = "normal";
+
+        if (data.verdict === "Threat Detected") {
+            statusClass = "status-threat";
+            toastType = "threat";
+        } else if (data.verdict === "Anomaly") {
+            statusClass = "status-anomaly";
+            toastType = "anomaly";
+        }
+
+        // ✅ Insert row into table
+        const row = `
+            <tr>
+                <td>${data.timestamp}</td>
+                <td>${data.origin_node}</td>
+                <td>${data.target_asn}</td>
+                <td>${data.risk_score}%</td>
+                <td><span class="status-badge ${statusClass}">${data.verdict}</span></td>
+            </tr>
+        `;
+        table.insertAdjacentHTML("afterbegin", row);
+        localStorage.setItem("scanLogs", table.innerHTML);
+
+        // ✅ Show toast (replaces broken alert)
+        if (data.verdict === "Threat Detected") {
+            showToast(`🚨 Threat Detected! Risk Score: ${data.risk_score}% — Alert email sent.`, "threat");
+        } else if (data.verdict === "Anomaly") {
+            showToast(`⚠ Anomaly detected. Risk Score: ${data.risk_score}%`, "anomaly");
+        } else {
+            showToast(`✅ Scan complete — Normal. Risk Score: ${data.risk_score}%`, "normal");
+        }
+
+    } catch (error) {
+        console.error("Scan Error:", error);
+        showToast("❌ Scan Error: " + error.message, "error");
+    } finally {
+        scanBtn.disabled = false;
+        scanBtn.textContent = "Scan Now";
+    }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traffic Map | Routing Anomaly Predictor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+
+:root{
+--bg:#0b0e14;
+--sidebar:#11141b;
+--card:#161b22;
+--primary:#00d2ff;
+--border:#30363d;
+--text-dim:#8b949e;
+--danger:#f85149;
+--success:#3fb950;
+--warning:#d29922;
+--accent:rgba(0,210,255,0.1);
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:white;
+font-family:'Segoe UI',sans-serif;
+display:flex;
+height:100vh;
+overflow:hidden;
+}
+
+/* ── Sidebar Styles ── */
+#sidebar-container{ display:flex; flex-shrink:0; }
+
+.sidebar{
+width:280px;
+height:100vh;
+background:var(--sidebar);
+border-right:1px solid var(--border);
+display:flex;
+flex-direction:column;
+padding:25px 0;
+flex-shrink:0;
+}
+
+.sidebar-header{
+padding:0 25px 30px;
+color:var(--primary);
+font-size:22px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+nav{
+display:flex;
+flex-direction:column;
+gap:10px;
+padding:0 15px;
+flex:1;
+}
+
+.nav-item{
+padding:14px 20px;
+color:var(--text-dim);
+cursor:pointer;
+transition:0.3s;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+text-decoration:none;
+}
+
+.nav-item:hover{ background:var(--accent); color:white; }
+
+.nav-item.active{
+background:var(--primary);
+color:#000 !important;
+font-weight:bold;
+}
+
+.logout{
+margin:15px;
+padding:14px 20px;
+color:var(--danger);
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+transition:0.3s;
+user-select:none;
+}
+
+.logout:hover{ background:rgba(248,81,73,0.15); }
+
+/* ── Main ── */
+.main{
+flex:1;
+padding:40px;
+overflow:auto;
+background:radial-gradient(circle at top right,#1a1f29,#0b0e14);
+}
+
+h1{ margin-top:0; }
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+padding:25px;
+transition:.3s;
+}
+
+.card:hover{ border-color:var(--primary); }
+
+.legend{
+padding:15px;
+background:#0b0e14;
+position:absolute;
+bottom:20px;
+left:20px;
+border-radius:10px;
+border:1px solid var(--border);
+z-index:10;
+}
+
+.legend h4{ margin:0 0 10px 0; font-size:12px; color:var(--primary); }
+.legend div{ font-size:12px; margin-bottom:5px; }
+
+</style>
+</head>
+<body>
+
+<!-- Auth guard -->
+<script>
+if (localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'login.html';
+}
+</script>
+
+<!-- ✅ Sidebar container -->
+<div id="sidebar-container"></div>
+
+<div class="main">
+    <section id="traffic">
+
+        <h1>Global Traffic Visualization</h1>
+
+        <div class="card" id="mapWrapper" style="height:550px; position:relative; overflow:hidden;">
+
+            <div class="legend">
+                <h4>NETWORK NODES</h4>
+                <div><i class="fas fa-circle" style="color:#2ecc71"></i> Active Node (12)</div>
+                <div><i class="fas fa-circle" style="color:#ff4d4d"></i> Anomaly Point</div>
+            </div>
+
+            <div id="mapContent" style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative;">
+
+                <div style="
+                    position:absolute;
+                    width:100%;
+                    height:100%;
+                    opacity:0.1;
+                    background:url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg') center/contain no-repeat;
+                "></div>
+
+                <h3 style="z-index:2;">Live Traffic Visualization</h3>
+                <p style="z-index:2; color:#8b949e;">Visualizing flow between 12 Active Nodes</p>
+
+                <div id="threatContainer" style="
+                    position:absolute;
+                    top:0; left:0;
+                    width:100%; height:100%;
+                    pointer-events:none;
+                "></div>
+
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<!-- ✅ Loads sidebar + wires logout + highlights active page -->
+<script src="sidebar-loader.js"></script>
+
+<!-- Traffic Animation -->
+<script>
+const container = document.getElementById("threatContainer");
+
+function createTraffic() {
+    const dot = document.createElement("div");
+    dot.style.cssText = `
+        position:absolute;
+        width:6px;
+        height:6px;
+        background:#2ecc71;
+        border-radius:50%;
+        left:${Math.random() * 100}%;
+        top:${Math.random() * 100}%;
+        transition:opacity 2.5s;
+    `;
+    container.appendChild(dot);
+    setTimeout(() => dot.remove(), 3000);
+}
+
+setInterval(createTraffic, 400);
+</script>
+
+</body>
+</html>

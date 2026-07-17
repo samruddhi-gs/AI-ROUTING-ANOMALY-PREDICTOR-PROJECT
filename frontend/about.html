@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About AI | AI Guard Pro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+
+:root{
+--bg:#0b0e14;
+--sidebar:#11141b;
+--card:#161b22;
+--primary:#00d2ff;
+--border:#30363d;
+--text-dim:#8b949e;
+--accent:rgba(0,210,255,0.1);
+--danger:#f85149;
+}
+
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:var(--bg);
+color:white;
+display:flex;
+height:100vh;
+overflow:hidden;
+}
+
+/* ── Sidebar Styles ── */
+#sidebar-container{ display:flex; flex-shrink:0; }
+
+.sidebar{
+width:280px;
+height:100vh;
+background:var(--sidebar);
+border-right:1px solid var(--border);
+display:flex;
+flex-direction:column;
+padding:25px 0;
+flex-shrink:0;
+}
+
+.sidebar-header{
+padding:0 25px 30px;
+color:var(--primary);
+font-size:22px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+nav{
+display:flex;
+flex-direction:column;
+gap:10px;
+padding:0 15px;
+flex:1;
+}
+
+.nav-item{
+padding:14px 20px;
+color:var(--text-dim);
+cursor:pointer;
+transition:0.3s;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+text-decoration:none;
+}
+
+.nav-item:hover{ background:var(--accent); color:white; }
+
+.nav-item.active{
+background:var(--primary);
+color:#000 !important;
+font-weight:bold;
+}
+
+.logout{
+margin:15px;
+padding:14px 20px;
+color:var(--danger);
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+transition:0.3s;
+user-select:none;
+}
+
+.logout:hover{ background:rgba(248,81,73,0.15); }
+
+/* ── Main Content ── */
+.main{
+flex:1;
+padding:40px;
+overflow:auto;
+background:radial-gradient(circle at top right,#1a1f29,#0b0e14);
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+padding:30px;
+margin-top:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-top:20px;
+}
+
+.info-box{
+background:rgba(255,255,255,0.03);
+padding:15px;
+border-radius:10px;
+border:1px solid var(--border);
+}
+
+.info-box h4{ margin:0; color:var(--primary); }
+.info-box p{ font-size:13px; color:var(--text-dim); }
+
+</style>
+</head>
+<body>
+
+<!-- Auth guard -->
+<script>
+if (localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'login.html';
+}
+</script>
+
+<!-- ✅ Step 1: Sidebar container -->
+<div id="sidebar-container"></div>
+
+<!-- Main Content -->
+<div class="main">
+
+    <h1>About AI Guard Pro Engine</h1>
+
+    <div class="card">
+        <div style="display:flex; gap:30px; align-items:flex-start;">
+
+            <i class="fas fa-brain" style="font-size:60px; color:var(--primary)"></i>
+
+            <div>
+                <h2 style="margin-top:0">Neural Anomaly Predictor (NAP) v2.0</h2>
+                <p>
+                    AI Guard Pro utilizes advanced <b>Graph Neural Networks (GNN)</b> to model
+                    the global internet routing topology and detect anomalies in BGP updates.
+                    The system analyzes both spatial and temporal patterns in routing behavior
+                    to predict suspicious network activities before they spread.
+                </p>
+
+                <div class="grid">
+                    <div class="info-box">
+                        <h4>Model Architecture</h4>
+                        <p>
+                            Recurrent Neural Networks (RNN) combined with attention
+                            mechanisms for analyzing sequential BGP routing data.
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Data Sources</h4>
+                        <p>
+                            Real-time ingestion from global routing collectors
+                            including RIPE RIS and RouteViews.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ✅ Step 2: One line loads sidebar + wires logout + highlights active page -->
+<script src="sidebar-loader.js"></script>
+
+</body>
+</html>

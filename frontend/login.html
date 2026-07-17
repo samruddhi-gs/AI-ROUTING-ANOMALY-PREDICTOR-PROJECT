@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AI Routing Anomaly Predictor</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --bg: #0b0e14;
+            --card: #161b22;
+            --border: #30363d;
+            --text-dim: #8b949e;
+            --accent: #58a6ff;
+            --danger: #f85149;
+            --success: #3fb950;
+            --input-focus: rgba(0, 210, 255, 0.15);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #1c2128 0%, #0b0e14 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: var(--card);
+            padding: 45px;
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            width: 440px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+            text-align: center;
+            backdrop-filter: blur(12px);
+            position: relative;
+            z-index: 10;
+            animation: containerSlideUp 0.6s ease-out;
+        }
+
+        @keyframes containerSlideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-section { margin-bottom: 35px; }
+        .header-section h2 { 
+            color: var(--primary); 
+            margin: 0; 
+            font-size: 20px; 
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 2px;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .role-switcher {
+            display: flex;
+            background: #0d1117;
+            padding: 6px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+        .role-btn {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 12px;
+            transition: var(--transition);
+            color: var(--text-dim);
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border: none;
+            background: transparent;
+        }
+        .role-btn.active {
+            background: var(--primary);
+            color: #000000;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2);
+        }
+
+        .form-group { text-align: left; margin-bottom: 22px; position: relative; }
+        .form-group label { 
+            display: block; 
+            font-size: 11px; 
+            color: var(--text-dim); 
+            margin-bottom: 10px; 
+            font-weight: 800; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: var(--transition);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        input:focus { 
+            border-color: var(--primary); 
+            outline: none; 
+            background: var(--input-focus);
+            box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.05);
+        }
+
+        .helper-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -12px;
+            margin-bottom: 25px;
+        }
+        .helper-text a {
+            font-size: 11px;
+            color: var(--accent);
+            text-decoration: none;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+        .helper-text a:hover { color: var(--primary); text-decoration: underline; }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-login:hover { 
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4); 
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        .btn-login:active { transform: translateY(0); }
+
+        .footer-links { 
+            margin-top: 30px; 
+            font-size: 14px; 
+            color: var(--text-dim); 
+            line-height: 1.8; 
+            border-top: 1px solid var(--border);
+            padding-top: 25px;
+        }
+        .footer-links a { color: var(--primary); text-decoration: none; font-weight: 800; }
+        .footer-links a:hover { text-decoration: underline; }
+
+        .bg-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.07) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .blob-1 { top: -100px; right: -100px; }
+        .blob-2 { bottom: -100px; left: -100px; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="login-container">
+        <div class="header-section">
+            <h2>
+                <i class="fas fa-shield-halved"></i> AI GUARD PRO
+            </h2>
+            <p style="color:var(--text-dim); font-size:11px; margin-top:10px; letter-spacing: 1.5px; font-weight: 600;">AUTONOMOUS BGP ANALYSIS HUB</p>
+        </div>
+
+        <div class="role-switcher">
+            <button type="button" class="role-btn active" id="adminTab" onclick="switchRole('admin')">ADMIN PRIVILEGE</button>
+            <button type="button" class="role-btn" id="userTab" onclick="switchRole('user')">USER ACCESS</button>
+        </div>
+
+        <!-- ✅ NO onsubmit here — handled purely via addEventListener below -->
+        <form id="authForm">
+            <div class="form-group">
+                <label id="idLabel">CORPORATE EMAIL / ADMIN ID</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user-shield"></i>
+                    <input type="text" id="identifier" placeholder="admin" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>ENCRYPTED PASSWORD</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+            </div>
+
+            <div class="helper-text">
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <input type="checkbox" id="remember" style="width:14px; height:14px; padding:0; cursor:pointer;">
+                    <label for="remember" style="margin:0; font-size:11px; cursor:pointer; text-transform:none;">Remember Me</label>
+                </div>
+                <a href="forgot-password.html">Reset Access?</a>
+            </div>
+
+            <button type="button" class="btn-login" id="authBtn">
+                <span>AUTHORIZE ACCESS</span>
+                <i class="fas fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <div class="footer-links">
+            New operative? <a href="register.html">Request Credentials</a> <br>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 5px;">
+                <span style="font-size: 10px; color: var(--text-dim);">
+                    <i class="fas fa-lock" style="margin-right: 5px;"></i> AES-256 SSL ENCRYPTION ACTIVE
+                </span>
+                <span style="font-size: 9px; opacity: 0.4; letter-spacing: 0.5px;">
+                    GATEWAY NODE: 127.0.0.1 // SERVER: PROD-AI-01
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // ✅ KEY FIX: button is type="button" so it never submits the form.
+        // Click is handled directly — no form submit event involved at all.
+        document.getElementById('authBtn').addEventListener('click', handleAuth);
+
+        async function handleAuth() {
+            const authBtn = document.getElementById('authBtn');
+            const email    = document.getElementById('identifier').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!email || !password) {
+                shakeContainer();
+                alert("Please enter your credentials.");
+                return;
+            }
+
+            // Loading state
+            authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFYING...';
+            authBtn.style.opacity = "0.7";
+            authBtn.disabled = true;
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === "success") {
+
+                    // ✅ Persist session
+                    sessionStorage.setItem("currentUser", data.email);
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("currentUser", data.email);
+                    localStorage.setItem("sessionStart", Date.now());
+
+                    // ✅ Success state
+                    authBtn.innerHTML = '<i class="fas fa-check"></i> ACCESS GRANTED';
+                    authBtn.style.background = "#3fb950";
+                    authBtn.style.opacity = "1";
+
+                    // ✅ Redirect after short delay
+                    setTimeout(function() {
+                        window.location.href = "dashboard.html";
+                    }, 800);
+
+                } else {
+                    shakeContainer();
+                    alert(data.message || "❌ Login Failed. Check credentials.");
+                    resetBtn();
+                }
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+                shakeContainer();
+                alert("⚠️ Cannot reach server. Is Flask running on port 5000?");
+                resetBtn();
+            }
+        }
+
+        function resetBtn() {
+            const authBtn = document.getElementById('authBtn');
+            authBtn.innerHTML = '<span>AUTHORIZE ACCESS</span> <i class="fas fa-arrow-right-to-bracket"></i>';
+            authBtn.style.opacity = "1";
+            authBtn.style.background = "var(--primary)";
+            authBtn.disabled = false;
+        }
+
+        function shakeContainer() {
+            const container = document.querySelector('.login-container');
+            container.style.animation = 'none';
+            container.offsetHeight;
+            container.style.animation = 'shake 0.4s ease';
+        }
+
+        function switchRole(role) {
+            const adminTab = document.getElementById('adminTab');
+            const userTab  = document.getElementById('userTab');
+            const label    = document.getElementById('idLabel');
+            const input    = document.getElementById('identifier');
+            
+            adminTab.classList.toggle('active', role === 'admin');
+            userTab.classList.toggle('active',  role === 'user');
+            
+            if (role === 'admin') {
+                label.innerHTML    = 'CORPORATE EMAIL / ADMIN ID';
+                input.placeholder  = "admin";
+            } else {
+                label.innerHTML    = 'USER EMAIL / ACCOUNT ID';
+                input.placeholder  = "user@gmail.com";
+            }
+
+            document.querySelector('.login-container').style.transform = "scale(0.99)";
+            setTimeout(() => {
+                document.querySelector('.login-container').style.transform = "scale(1)";
+            }, 100);
+        }
+
+        window.onload = () => {
+            console.log("%c AI GUARD PRO SECURITY INITIALIZED ", "background: #00d2ff; color: #000; font-weight: bold; padding: 5px;");
+            localStorage.removeItem('isLoggedIn');
+
+            if (window.location.hash === '#demo') {
+                document.getElementById('identifier').value = "admin";
+                document.getElementById('password').value   = "admin123";
+            }
+        };
+
+    </script>
+</body>
+</html>

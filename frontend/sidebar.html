@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+
+:root{
+--bg:#0b0e14;
+--sidebar:#11141b;
+--card:#161b22;
+--primary:#00d2ff;
+--border:#30363d;
+--text-dim:#8b949e;
+--danger:#f85149;
+--success:#3fb950;
+--warning:#d29922;
+--accent:rgba(0,210,255,0.1);
+}
+
+body{
+margin:0;
+background:var(--bg);
+font-family:'Segoe UI',sans-serif;
+display:flex;
+}
+
+.sidebar{
+width:280px;
+height:100vh;
+background:var(--sidebar);
+border-right:1px solid var(--border);
+display:flex;
+flex-direction:column;
+padding:25px 0;
+}
+
+.sidebar-header{
+padding:0 25px 30px;
+color:var(--primary);
+font-size:22px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+nav{
+display:flex;
+flex-direction:column;
+gap:10px;
+padding:0 15px;
+flex:1;
+}
+
+.nav-item{
+padding:14px 20px;
+color:var(--text-dim);
+cursor:pointer;
+transition:0.3s;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+text-decoration:none;
+}
+
+.nav-item:hover{
+background:var(--accent);
+color:white;
+}
+
+.nav-item.active{
+background:var(--primary);
+color:#000 !important;
+font-weight:bold;
+}
+
+.logout{
+margin:15px;
+padding:14px 20px;
+color:var(--danger);
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:15px;
+border-radius:8px;
+transition:0.3s;
+}
+
+.logout:hover{
+background:rgba(248,81,73,0.15);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR COMPONENT - No scripts here, handled by sidebar-loader.js -->
+<aside class="sidebar">
+
+    <div class="sidebar-header">
+        <i class="fas fa-shield-halved"></i>
+        AI GUARD PRO
+    </div>
+
+    <nav>
+        <a href="dashboard.html" class="nav-item">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a href="network-logs.html" class="nav-item">
+            <i class="fas fa-list-ul"></i> Network Logs
+        </a>
+        <a href="traffic-map.html" class="nav-item">
+            <i class="fas fa-earth-americas"></i> Traffic Map
+        </a>
+        <a href="reports.html" class="nav-item">
+            <i class="fas fa-file-invoice"></i> Reports / History
+        </a>
+        <a href="alerts.html" class="nav-item">
+            <i class="fas fa-triangle-exclamation"></i> Alert Modules
+        </a>
+        <a href="about.html" class="nav-item">
+            <i class="fas fa-microchip"></i> About AI
+        </a>
+    </nav>
+
+    <div class="logout" id="logoutBtn">
+        <i class="fas fa-power-off"></i> Logout
+    </div>
+
+</aside>
+
+</body>
+</html>
